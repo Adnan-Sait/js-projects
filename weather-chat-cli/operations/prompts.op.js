@@ -7,6 +7,6 @@ import { EXIT_PROMPT } from "../utils/constants.js";
  */
 export function createPromptsString(prompts) {
   return [...prompts, EXIT_PROMPT]
-    .map((val) => `${val.option}: ${val.label}`)
+    .map((val, index) => `${val.option ?? index}: ${val.label}`)
     .join("\n");
 }

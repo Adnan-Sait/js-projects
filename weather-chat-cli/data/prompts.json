@@ -1,33 +1,27 @@
 [
   {
     "label": "Show current weather",
-    "option": "0",
     "subPrompts": null,
     "action": "weather-home"
   },
   {
     "label": "Show weather in another town",
-    "option": "1",
     "subPrompts": null,
     "action": "weather-other"
   },
   {
     "label": "Change my Settings",
-    "option": "2",
     "subPrompts": [
       {
         "label": "Update Temperature Metric (C, F)",
-        "option": "0",
         "subPrompts": [
           {
             "label": "Celius",
-            "option": "0",
             "subPrompts": null,
             "action": "settings-temp-C"
           },
           {
             "label": "Fahrenheit",
-            "option": "1",
             "subPrompts": null,
             "action": "settings-temp-F"
           }
@@ -36,7 +30,6 @@
       },
       {
         "label": "Update City",
-        "option": "1",
         "subPrompts": null,
         "action": "settings-city"
       }
