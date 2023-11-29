@@ -1,0 +1,45 @@
+[
+  {
+    "fullName": "John Doe",
+    "city": "Sydney",
+    "country": "Australia",
+    "defaultDegree": "fahrenheit",
+    "latitude": -33.86785,
+    "longitude": 151.20732
+  },
+  {
+    "fullName": "Emma Smith",
+    "city": "London",
+    "country": "United Kingdom",
+    "defaultDegree": "celsius",
+    "latitude": 51.50853,
+    "longitude": -0.12574
+  },
+  {
+    "fullName": "Carlos Rodriguez",
+    "city": "Barcelona",
+    "country": "Spain",
+    "defaultDegree": "celsius",
+    "latitude": 41.38879,
+    "longitude": 2.15899
+  },
+  {
+    "fullName": "Miyuki Tanaka",
+    "city": "Tokyo",
+    "country": "Japan",
+    "defaultDegree": "celsius",
+    "latitude": 35.6895,
+    "longitude": 139.69171
+  },
+  {
+    "fullName": "Ahmed Hassan",
+    "city": "Cairo",
+    "country": "Egypt",
+    "defaultDegree": "celsius",
+    "latitude": 30.06263,
+    "longitude": 31.24967
+  },
+  {
+    "fullName": "Guest"
+  }
+]

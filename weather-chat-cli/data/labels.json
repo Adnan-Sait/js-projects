@@ -1,3 +1,3 @@
 {
-  "welcomePage": "Welcome to the Weather Chat CLI.\nPlease select one of the options below,"
+  "welcomePage": "Welcome to the Weather Chat CLI.\nPowered by Open-Meteo (https://open-meteo.com/en/docs).\nPlease select a user to continue."
 }

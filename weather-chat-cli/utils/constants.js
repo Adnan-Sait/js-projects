@@ -5,13 +5,6 @@ export const EXIT_PROMPT = {
   action: "exit",
 };
 
-export const GUEST_USER = {
-  fullName: "Guest",
-  city: "New York",
-  country: "United States",
-  defaultDegree: "celsius",
-};
-
 export const SERVICE_URLS = {
   currentWeather:
     "https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=apparent_temperature&timezone={timezone}",

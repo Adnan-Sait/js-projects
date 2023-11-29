@@ -10,6 +10,16 @@ import { startChat } from "./operations/chat.op.js";
  */
 
 /**
+ * @typedef     {Object}    User
+ * @property    {String}    fullName
+ * @property    {String}    city
+ * @property    {String}    country
+ * @property    {"celsius" | "fahrenheit"}    defaultDegree
+ * @property    {Number}    latitude
+ * @property    {Number}    longitude
+ */
+
+/**
  * @typedef     {Object}            GeoLocationData
  * @property    {String}            name
  * @property    {Number}            latitude
@@ -49,10 +59,17 @@ import { startChat } from "./operations/chat.op.js";
  * @type {Prompt[]}
  */
 const promptsJson = JSON.parse(fs.readFileSync("./data/prompts.json"));
+/**
+ * @type {User[]}
+ */
+const usersJson = JSON.parse(fs.readFileSync("./data/users.json"));
 const labelsJson = JSON.parse(fs.readFileSync("./data/labels.json"));
 
-function main() {
-  startChat(promptsJson, labelsJson);
+/**
+ * Main Function.
+ */
+async function main() {
+  startChat(promptsJson, usersJson, labelsJson);
 }
 
 main();
