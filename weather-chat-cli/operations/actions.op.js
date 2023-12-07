@@ -12,18 +12,19 @@ import constants from "../utils/constants.js";
  * Invokes reducers based on the specified action
  *
  * @param {String} action Action to be performed.
+ * @param {import("..").User} user The active user.
  * @param {readline.Interface} rlInterface Interface to get user input
  * @returns {Promise<Boolean>}  true - if the chat needs to be terminated, false - if the chat must be restarted.
  */
-export async function actionsReducer(action, rlInterface) {
+export async function actionsReducer(action, user, rlInterface) {
   let returnVal;
   switch (action) {
     case "weather-home": {
       const response = await getWeather(
-        11.3498,
-        76.7938,
-        "Asia/Kolkata",
-        "Coonoor"
+        user.latitude,
+        user.longitude,
+        user.timezone,
+        user.city
       );
       if (response) {
         consoleUtils.data(response);
@@ -56,7 +57,7 @@ export async function actionsReducer(action, rlInterface) {
           const response = await getWeather(
             chosenOption.latitude,
             chosenOption.longitude,
-            chosenOption.timezone,
+            chosenOption.timezone || user.timezone,
             chosenOption.name
           );
 

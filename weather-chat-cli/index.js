@@ -14,6 +14,7 @@ import { startChat } from "./operations/chat.op.js";
  * @property    {String}    fullName
  * @property    {String}    city
  * @property    {String}    country
+ * @property    {String}    timezone
  * @property    {"celsius" | "fahrenheit"}    defaultDegree
  * @property    {Number}    latitude
  * @property    {Number}    longitude
@@ -53,6 +54,25 @@ import { startChat } from "./operations/chat.op.js";
  * @property    {Number}            longitude
  * @property    {WeatherUnits}      current_units
  * @property    {WeatherData}       current
+ */
+
+/**
+ * @typedef     {Object}            WeatherTransactionsLog
+ * @property    {Date}              timestampGmt
+ * @property    {String}            weatherData
+ */
+
+/**
+ * @typedef     {Object}                      AppState
+ * @property    {User}                        selectedUser
+ * @property    {WeatherTransactionsLog[]}    weatherTransactions
+ */
+
+/**
+ * @template    T
+ * @typedef     {Object}            AppAction
+ * @property    {String}            type
+ * @property    {T}                 payload
  */
 
 /**

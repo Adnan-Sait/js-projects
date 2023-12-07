@@ -3,6 +3,7 @@ import { stdin as input, stdout as output } from "node:process";
 import { createPromptsString, createUserPromptString } from "./prompts.op.js";
 import { actionsReducer } from "./actions.op.js";
 import consoleUtils from "../utils/consoleFunctions.js";
+import store from "../store/store.js";
 
 /**
  * Shows user the options, receives the response and evaluates if it is invalid.
@@ -50,9 +51,11 @@ export async function startChat(chatOptions, users, labelsJson) {
     let closeChat = false;
 
     closeChat = await selectUserChat(users, rl);
+    const { selectedUser } = store.getState();
+    consoleUtils.info("Selected User: ", selectedUser.fullName);
 
     while (!closeChat) {
-      closeChat = await chat(chatOptions, rl);
+      closeChat = await chat(chatOptions, selectedUser, rl);
     }
   } finally {
     rl.close();
@@ -63,10 +66,11 @@ export async function startChat(chatOptions, users, labelsJson) {
  * Handles user chat.
  *
  * @param {Prompt[]} prompts Prompts to be shown.
+ * @param {import("../index.js").User} user Active User.
  * @param {readline.Interface} rlInterface Interface to get user input.
  * @returns {Promise<Boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
  */
-export async function chat(prompts, rlInterface) {
+export async function chat(prompts, user, rlInterface) {
   // Print the options on the console.
   const promptStr = createPromptsString(prompts);
   const chosenPrompt = await getPromptResponse(
@@ -82,11 +86,15 @@ export async function chat(prompts, rlInterface) {
 
   if (chosenPrompt.action) {
     // Perform some action.
-    const response = await actionsReducer(chosenPrompt.action, rlInterface);
+    const response = await actionsReducer(
+      chosenPrompt.action,
+      user,
+      rlInterface
+    );
     return response;
   } else {
     // Show next set of options.
-    return await chat(chosenPrompt.subPrompts, rlInterface);
+    return await chat(chosenPrompt.subPrompts, user, rlInterface);
   }
 }
 
@@ -108,8 +116,7 @@ export async function selectUserChat(users, rlInterface) {
   if (chosenUser === null) {
     return true;
   }
-
-  consoleUtils.info("Selected User: ", chosenUser.fullName);
+  store.dispatch({ type: "user/select", payload: chosenUser });
 
   return false;
 }
