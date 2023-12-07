@@ -7,6 +7,7 @@ import {
   formatTemperature,
 } from "../utils/temperatureFunctions.js";
 import constants from "../utils/constants.js";
+import store from "../store/store.js";
 
 /**
  * Invokes reducers based on the specified action
@@ -24,7 +25,8 @@ export async function actionsReducer(action, user, rlInterface) {
         user.latitude,
         user.longitude,
         user.timezone,
-        user.city
+        user.city,
+        user.defaultDegree
       );
       if (response) {
         consoleUtils.data(response);
@@ -58,7 +60,8 @@ export async function actionsReducer(action, user, rlInterface) {
             chosenOption.latitude,
             chosenOption.longitude,
             chosenOption.timezone || user.timezone,
-            chosenOption.name
+            chosenOption.name,
+            user.defaultDegree
           );
 
           if (response) {
@@ -76,12 +79,22 @@ export async function actionsReducer(action, user, rlInterface) {
       break;
     }
     case "settings-temp-C": {
-      console.log("settings temp - C");
+      store.dispatch({
+        type: "user/updateMetric",
+        payload: constants.DEGREE_UNIT.c,
+      });
+      const { defaultDegree } = store.getState().selectedUser;
+      consoleUtils.info("Temperature Unit Set to: ", defaultDegree);
       returnVal = false;
       break;
     }
     case "settings-temp-F": {
-      console.log("settings temp - F");
+      store.dispatch({
+        type: "user/updateMetric",
+        payload: constants.DEGREE_UNIT.f,
+      });
+      const { defaultDegree } = store.getState().selectedUser;
+      consoleUtils.info("Temperature Unit Set to: ", defaultDegree);
       returnVal = false;
       break;
     }
@@ -105,11 +118,17 @@ export async function actionsReducer(action, user, rlInterface) {
  * @param {Number} longitude Longitude
  * @param {String} timezone Timezone
  * @param {String} cityName Name of the city
+ * @param {"celsius" | "fahrenheit"} unit Temperature unit
  * @returns {Promise<String | null>} null is returned incase of an error.
  */
-async function getWeather(latitude, longitude, timezone, cityName) {
+async function getWeather(latitude, longitude, timezone, cityName, unit) {
   try {
-    const response = await getCurrentWeather(latitude, longitude, timezone);
+    const response = await getCurrentWeather(
+      latitude,
+      longitude,
+      timezone,
+      unit
+    );
     if (response?.current && response?.current_units) {
       const time = new Date(response.current.time);
       const formattedTime = getFormattedTimeZone(time);

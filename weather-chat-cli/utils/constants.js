@@ -7,7 +7,7 @@ export const EXIT_PROMPT = {
 
 export const SERVICE_URLS = {
   currentWeather:
-    "https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=apparent_temperature&timezone={timezone}",
+    "https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=apparent_temperature&timezone={timezone}&temperature_unit={unit}",
   geoSearch:
     "https://geocoding-api.open-meteo.com/v1/search?name={name}&count=5",
 };

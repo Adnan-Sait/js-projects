@@ -8,12 +8,13 @@ import constants from "../utils/constants.js";
  * @param {String} timezone Timezone name
  * @returns {Promise<import("..").WeatherResponse>} Weather data
  */
-export async function getCurrentWeather(latitude, longitude, timezone) {
+export async function getCurrentWeather(latitude, longitude, timezone, unit) {
   let url = constants.SERVICE_URLS.currentWeather;
   url = url
     .replace("{latitude}", latitude)
     .replace("{longitude}", longitude)
-    .replace("{timezone}", timezone);
+    .replace("{timezone}", timezone)
+    .replace("{unit}", unit);
   try {
     const response = await fetch(url);
 

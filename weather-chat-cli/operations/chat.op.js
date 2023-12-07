@@ -55,7 +55,7 @@ export async function startChat(chatOptions, users, labelsJson) {
     consoleUtils.info("Selected User: ", selectedUser.fullName);
 
     while (!closeChat) {
-      closeChat = await chat(chatOptions, selectedUser, rl);
+      closeChat = await chat(chatOptions, rl);
     }
   } finally {
     rl.close();
@@ -66,11 +66,11 @@ export async function startChat(chatOptions, users, labelsJson) {
  * Handles user chat.
  *
  * @param {Prompt[]} prompts Prompts to be shown.
- * @param {import("../index.js").User} user Active User.
  * @param {readline.Interface} rlInterface Interface to get user input.
  * @returns {Promise<Boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
  */
-export async function chat(prompts, user, rlInterface) {
+export async function chat(prompts, rlInterface) {
+  const { selectedUser: user } = store.getState();
   // Print the options on the console.
   const promptStr = createPromptsString(prompts);
   const chosenPrompt = await getPromptResponse(
@@ -94,7 +94,7 @@ export async function chat(prompts, user, rlInterface) {
     return response;
   } else {
     // Show next set of options.
-    return await chat(chosenPrompt.subPrompts, user, rlInterface);
+    return await chat(chosenPrompt.subPrompts, rlInterface);
   }
 }
 
