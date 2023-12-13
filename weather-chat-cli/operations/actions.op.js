@@ -79,22 +79,14 @@ export async function actionsReducer(action, user, rlInterface) {
       break;
     }
     case "settings-temp-C": {
-      store.dispatch({
-        type: "user/updateMetric",
-        payload: constants.DEGREE_UNIT.c,
-      });
-      const { defaultDegree } = store.getState().selectedUser;
-      consoleUtils.info("Temperature Unit Set to: ", defaultDegree);
+      const degree = updateTempUnit(constants.DEGREE_UNIT.c);
+      consoleUtils.info("Temperature Unit Set to: ", degree);
       returnVal = false;
       break;
     }
     case "settings-temp-F": {
-      store.dispatch({
-        type: "user/updateMetric",
-        payload: constants.DEGREE_UNIT.f,
-      });
-      const { defaultDegree } = store.getState().selectedUser;
-      consoleUtils.info("Temperature Unit Set to: ", defaultDegree);
+      const degree = updateTempUnit(constants.DEGREE_UNIT.f);
+      consoleUtils.info("Temperature Unit Set to: ", degree);
       returnVal = false;
       break;
     }
@@ -178,6 +170,19 @@ async function getCitiesByName(name) {
   }
 }
 
-function updateUserHomeTown() {}
+/**
+ * Updates the Temperature Unit and returns the updated value.
+ *
+ * @param {"celsius" | "fahrenheit"} degreeUnit Degree Unit
+ *
+ * @returns {"celsius" | "fahrenheit"} updated degree unit
+ */
+function updateTempUnit(degreeUnit) {
+  store.dispatch({
+    type: "user/updateMetric",
+    payload: degreeUnit,
+  });
+  const { defaultDegree } = store.getState().selectedUser;
 
-function updateUserTempSetting() {}
+  return defaultDegree;
+}
