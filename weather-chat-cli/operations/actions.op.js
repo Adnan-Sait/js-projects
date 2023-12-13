@@ -1,6 +1,9 @@
 import readline from "node:readline/promises";
 import { getCurrentWeather, searchCity } from "../services/weather.sv.js";
-import { getFormattedTimeZone } from "../utils/dateFunctions.js";
+import {
+  getFormattedTimeZone,
+  getGmtFormattedDateTime,
+} from "../utils/dateFunctions.js";
 import consoleUtils from "../utils/consoleFunctions.js";
 import {
   findWeatherSeverity,
@@ -94,6 +97,19 @@ export async function actionsReducer(action, user, rlInterface) {
       returnVal = false;
       break;
     }
+    case "transaction-logs": {
+      const { weatherTransactions } = store.getState();
+
+      const logs = weatherTransactions.map((data) => {
+        return `${getGmtFormattedDateTime(data.timestamp)}: ${
+          data.weatherData
+        }`;
+      });
+
+      consoleUtils.info(logs.join("\n"));
+
+      returnVal = false;
+    }
     default: {
       returnVal = false;
     }
@@ -141,7 +157,7 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
        * @type {import("..").WeatherTransactionsLog}
        */
       const weatherTransaction = {
-        timestampGmt: new Date(),
+        timestamp: new Date(),
         weatherData: weatherResponse,
       };
 

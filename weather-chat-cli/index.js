@@ -58,7 +58,7 @@ import { startChat } from "./operations/chat.op.js";
 
 /**
  * @typedef     {Object}            WeatherTransactionsLog
- * @property    {Date}              timestampGmt
+ * @property    {Date}              timestamp
  * @property    {String}            weatherData
  */
 
