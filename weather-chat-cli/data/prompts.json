@@ -35,5 +35,11 @@
       }
     ],
     "action": null
+  },
+  {
+    "label": "See Weather Access Logs",
+    "condition": "logs?.length > 0",
+    "subPrompts": null,
+    "action": "transaction-logs"
   }
 ]

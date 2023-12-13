@@ -1,6 +1,10 @@
 import readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { createPromptsString, createUserPromptString } from "./prompts.op.js";
+import {
+  createPromptsString,
+  createUserPromptString,
+  filterPromptsByCondition,
+} from "./prompts.op.js";
 import { actionsReducer } from "./actions.op.js";
 import consoleUtils from "../utils/consoleFunctions.js";
 import store from "../store/store.js";
@@ -71,12 +75,15 @@ export async function startChat(chatOptions, users, labelsJson) {
  */
 export async function chat(prompts, rlInterface) {
   const { selectedUser: user } = store.getState();
+
+  const filteredPrompts = filterPromptsByCondition(prompts);
+
   // Print the options on the console.
-  const promptStr = createPromptsString(prompts);
+  const promptStr = createPromptsString(filteredPrompts);
   const chosenPrompt = await getPromptResponse(
     promptStr,
     "Enter your response: ",
-    prompts,
+    filteredPrompts,
     rlInterface
   );
 

@@ -131,10 +131,22 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
         response.current.apparent_temperature,
         unit
       );
-      return `Temperature in ${cityName} was ${formatTemperature(
+
+      const weatherResponse = `Temperature in ${cityName} was ${formatTemperature(
         `${response.current.apparent_temperature}${response.current_units.apparent_temperature}`,
         severity
       )} at ${formattedTime} ${timezone}`;
+
+      /**
+       * @type {import("..").WeatherTransactionsLog}
+       */
+      const weatherTransaction = {
+        timestampGmt: new Date(),
+        weatherData: weatherResponse,
+      };
+
+      store.dispatch({ type: "weather/add", payload: weatherTransaction });
+      return weatherResponse;
     } else {
       throw new Error("Data field is not present");
     }

@@ -4,9 +4,9 @@ import { startChat } from "./operations/chat.op.js";
 /**
  * @typedef     {Object}            Prompt
  * @property    {String}            label
- * @property    {String}            id
  * @property    {Prompt[] | null}   subPrompts
  * @property    {String}            action
+ * @property    {String}            condition     JS condition that can be evaluated. Must evaluate to a boolean.
  */
 
 /**
