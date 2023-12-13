@@ -37,43 +37,22 @@ export async function actionsReducer(action, user, rlInterface) {
       break;
     }
     case "weather-other": {
-      const cityName = await rlInterface.question(
-        consoleUtils.prompt("Please enter the name of the city: ")
-      );
-      const cities = await getCitiesByName(cityName);
-      if (cities && cities.length > 0) {
-        consoleUtils.data(`Found ${cities.length} cities.`);
-        const prompt = cities.reduce((acc, item, index) => {
-          const promptStr = `${index}: ${item.name}, ${item.country}`;
-          const endChar = cities.length - index > 1 ? "\n" : "";
-          return `${acc}${promptStr}${endChar}`;
-        }, "");
-        consoleUtils.options(prompt);
-        const option = await rlInterface.question(
-          consoleUtils.prompt("Enter your response: ")
+      const chosenCity = await selectCity(rlInterface);
+
+      if (chosenCity) {
+        const response = await getWeather(
+          chosenCity.latitude,
+          chosenCity.longitude,
+          chosenCity.timezone || user.timezone,
+          chosenCity.name,
+          user.defaultDegree
         );
 
-        const chosenOption = cities[Number(option)];
-
-        if (chosenOption) {
-          const response = await getWeather(
-            chosenOption.latitude,
-            chosenOption.longitude,
-            chosenOption.timezone || user.timezone,
-            chosenOption.name,
-            user.defaultDegree
-          );
-
-          if (response) {
-            consoleUtils.data(response);
-          } else {
-            consoleUtils.error("Error getting weather data for the location");
-          }
+        if (response) {
+          consoleUtils.data(response);
+        } else {
+          consoleUtils.error("Error getting weather data for the location");
         }
-      } else {
-        consoleUtils.error(
-          "Could not find any matching cities. Please check the entered city name."
-        );
       }
       returnVal = false;
       break;
@@ -91,7 +70,27 @@ export async function actionsReducer(action, user, rlInterface) {
       break;
     }
     case "settings-city": {
-      console.log("settings city");
+      const chosenCity = await selectCity(rlInterface);
+
+      if (chosenCity) {
+        /**
+         * @type {import("..").User}
+         */
+        const updatedUser = {
+          city: chosenCity.name,
+          latitude: chosenCity.latitude,
+          longitude: chosenCity.longitude,
+          country: chosenCity.country,
+          timezone: chosenCity.timezone || user.timezone,
+        };
+        store.dispatch({ type: "user/updateCity", payload: updatedUser });
+        const { selectedUser } = store.getState();
+
+        consoleUtils.info(
+          `Hometown Set to: ${selectedUser.city}, ${selectedUser.country}`
+        );
+      }
+
       returnVal = false;
       break;
     }
@@ -168,6 +167,77 @@ async function getCitiesByName(name) {
     // console.err(`Error in 'getCitiesByName', `, err.message);
     return null;
   }
+}
+
+/**
+ * Prompts the user to enter the name of city and select it.
+ *
+ * @param {readline.Interface} rlInterface
+ *
+ * @returns {Promise<import("..").GeoLocationData | null>} City if found, else null.
+ */
+async function selectCity(rlInterface) {
+  const cityName = await rlInterface.question(
+    consoleUtils.prompt("Please enter the name of the city: ")
+  );
+  const cities = await getCitiesByName(cityName);
+  if (!cities || cities.length === 0) {
+    consoleUtils.error(
+      "Could not find any matching cities. Please check the entered city name."
+    );
+    return null;
+  }
+
+  const filteredCities = cities.filter(validateCityData);
+
+  consoleUtils.data(
+    `Found ${filteredCities.length} ${
+      filteredCities.length > 1 ? "Cities" : "City"
+    }.`
+  );
+  const prompt = filteredCities.reduce((acc, item, index) => {
+    const promptStr = `${index}: ${item.name}, ${item.country}`;
+    const endChar = filteredCities.length - index > 1 ? "\n" : "";
+    return `${acc}${promptStr}${endChar}`;
+  }, "");
+
+  let selectedOption;
+
+  while (!selectedOption) {
+    consoleUtils.options(prompt);
+    selectedOption = await rlInterface.question(
+      consoleUtils.prompt("Enter your response: ")
+    );
+
+    if (!filteredCities[Number(selectedOption)]) {
+      consoleUtils.error(
+        `Invalid option '${selectedOption}'.\nPlease select a valid option.`
+      );
+      selectedOption = null;
+    }
+  }
+
+  const chosenCity = filteredCities[Number(selectedOption)];
+
+  if (chosenCity) {
+    return chosenCity;
+  }
+  return null;
+}
+
+/**
+ * Validates if the city object is valid.
+ * The city object must contain name, latitude, longitude, and country to be valid.
+ *
+ * @param {import("..").GeoLocationData} city
+ *
+ * @returns {Boolean} true if valid, false if invalid.
+ */
+function validateCityData(city) {
+  if (city.name && city.country && city.latitude && city.longitude) {
+    return true;
+  }
+  return false;
 }
 
 /**
