@@ -1,16 +1,15 @@
-import readline from "node:readline/promises";
-import { getCurrentWeather, searchCity } from "../services/weather.sv.js";
+import { getCurrentWeather, searchCity } from '../services/weather.sv.js';
 import {
   getFormattedTimeZone,
   getGmtFormattedDateTime,
-} from "../utils/dateFunctions.js";
-import consoleUtils from "../utils/consoleFunctions.js";
+} from '../utils/dateFunctions.js';
+import consoleUtils from '../utils/consoleFunctions.js';
 import {
   findWeatherSeverity,
   formatTemperature,
-} from "../utils/temperatureFunctions.js";
-import constants from "../utils/constants.js";
-import store from "../store/store.js";
+} from '../utils/temperatureFunctions.js';
+import { DEGREE_UNIT } from '../utils/constants.js';
+import store from '../store/store.js';
 
 /**
  * Invokes reducers based on the specified action
@@ -23,23 +22,23 @@ import store from "../store/store.js";
 export async function actionsReducer(action, user, rlInterface) {
   let returnVal;
   switch (action) {
-    case "weather-home": {
+    case 'weather-home': {
       const response = await getWeather(
         user.latitude,
         user.longitude,
         user.timezone,
         user.city,
-        user.defaultDegree
+        user.defaultDegree,
       );
       if (response) {
         consoleUtils.data(response);
       } else {
-        consoleUtils.error("Error getting weather data for your home location");
+        consoleUtils.error('Error getting weather data for your home location');
       }
       returnVal = false;
       break;
     }
-    case "weather-other": {
+    case 'weather-other': {
       const chosenCity = await selectCity(rlInterface);
 
       if (chosenCity) {
@@ -48,31 +47,31 @@ export async function actionsReducer(action, user, rlInterface) {
           chosenCity.longitude,
           chosenCity.timezone || user.timezone,
           chosenCity.name,
-          user.defaultDegree
+          user.defaultDegree,
         );
 
         if (response) {
           consoleUtils.data(response);
         } else {
-          consoleUtils.error("Error getting weather data for the location");
+          consoleUtils.error('Error getting weather data for the location');
         }
       }
       returnVal = false;
       break;
     }
-    case "settings-temp-C": {
-      const degree = updateTempUnit(constants.DEGREE_UNIT.c);
-      consoleUtils.info("Temperature Unit Set to: ", degree);
+    case 'settings-temp-C': {
+      const degree = updateTempUnit(DEGREE_UNIT.c);
+      consoleUtils.info('Temperature Unit Set to: ', degree);
       returnVal = false;
       break;
     }
-    case "settings-temp-F": {
-      const degree = updateTempUnit(constants.DEGREE_UNIT.f);
-      consoleUtils.info("Temperature Unit Set to: ", degree);
+    case 'settings-temp-F': {
+      const degree = updateTempUnit(DEGREE_UNIT.f);
+      consoleUtils.info('Temperature Unit Set to: ', degree);
       returnVal = false;
       break;
     }
-    case "settings-city": {
+    case 'settings-city': {
       const chosenCity = await selectCity(rlInterface);
 
       if (chosenCity) {
@@ -86,18 +85,18 @@ export async function actionsReducer(action, user, rlInterface) {
           country: chosenCity.country,
           timezone: chosenCity.timezone || user.timezone,
         };
-        store.dispatch({ type: "user/updateCity", payload: updatedUser });
+        store.dispatch({ type: 'user/updateCity', payload: updatedUser });
         const { selectedUser } = store.getState();
 
         consoleUtils.info(
-          `Hometown Set to: ${selectedUser.city}, ${selectedUser.country}`
+          `Hometown Set to: ${selectedUser.city}, ${selectedUser.country}`,
         );
       }
 
       returnVal = false;
       break;
     }
-    case "transaction-logs": {
+    case 'transaction-logs': {
       const { weatherTransactions } = store.getState();
 
       const logs = weatherTransactions.map((data) => {
@@ -106,9 +105,10 @@ export async function actionsReducer(action, user, rlInterface) {
         }`;
       });
 
-      consoleUtils.info(logs.join("\n"));
+      consoleUtils.info(logs.join('\n'));
 
       returnVal = false;
+      break;
     }
     default: {
       returnVal = false;
@@ -134,23 +134,23 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
       latitude,
       longitude,
       timezone,
-      unit
+      unit,
     );
     if (response?.current && response?.current_units) {
       const time = new Date(response.current.time);
       const formattedTime = getFormattedTimeZone(time);
-      const unit =
-        constants.DEGREE_UNIT[
+      const responseUnit =
+        DEGREE_UNIT[
           response.current_units.apparent_temperature.toLowerCase().at(1)
         ];
       const severity = findWeatherSeverity(
         response.current.apparent_temperature,
-        unit
+        responseUnit,
       );
 
       const weatherResponse = `Temperature in ${cityName} was ${formatTemperature(
         `${response.current.apparent_temperature}${response.current_units.apparent_temperature}`,
-        severity
+        severity,
       )} at ${formattedTime} ${timezone}`;
 
       /**
@@ -161,11 +161,10 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
         weatherData: weatherResponse,
       };
 
-      store.dispatch({ type: "weather/add", payload: weatherTransaction });
+      store.dispatch({ type: 'weather/add', payload: weatherTransaction });
       return weatherResponse;
-    } else {
-      throw new Error("Data field is not present");
     }
+    throw new Error('Data field is not present');
   } catch (err) {
     // console.error(`Error in 'getWeather', `, err);
     return null;
@@ -185,12 +184,10 @@ async function getCitiesByName(name) {
     if (response) {
       if (!response.results || response.results.length === 0) {
         return [];
-      } else {
-        return response.results;
       }
-    } else {
-      throw new Error("Data field is not present");
+      return response.results;
     }
+    throw new Error('Data field is not present');
   } catch (err) {
     // console.err(`Error in 'getCitiesByName', `, err.message);
     return null;
@@ -206,12 +203,12 @@ async function getCitiesByName(name) {
  */
 async function selectCity(rlInterface) {
   const cityName = await rlInterface.question(
-    consoleUtils.prompt("Please enter the name of the city: ")
+    consoleUtils.prompt('Please enter the name of the city: '),
   );
   const cities = await getCitiesByName(cityName);
   if (!cities || cities.length === 0) {
     consoleUtils.error(
-      "Could not find any matching cities. Please check the entered city name."
+      'Could not find any matching cities. Please check the entered city name.',
     );
     return null;
   }
@@ -220,26 +217,27 @@ async function selectCity(rlInterface) {
 
   consoleUtils.data(
     `Found ${filteredCities.length} ${
-      filteredCities.length > 1 ? "Cities" : "City"
-    }.`
+      filteredCities.length > 1 ? 'Cities' : 'City'
+    }.`,
   );
   const prompt = filteredCities.reduce((acc, item, index) => {
     const promptStr = `${index}: ${item.name}, ${item.country}`;
-    const endChar = filteredCities.length - index > 1 ? "\n" : "";
+    const endChar = filteredCities.length - index > 1 ? '\n' : '';
     return `${acc}${promptStr}${endChar}`;
-  }, "");
+  }, '');
 
   let selectedOption;
 
   while (!selectedOption) {
     consoleUtils.options(prompt);
+    // eslint-disable-next-line no-await-in-loop
     selectedOption = await rlInterface.question(
-      consoleUtils.prompt("Enter your response: ")
+      consoleUtils.prompt('Enter your response: '),
     );
 
     if (!filteredCities[Number(selectedOption)]) {
       consoleUtils.error(
-        `Invalid option '${selectedOption}'.\nPlease select a valid option.`
+        `Invalid option '${selectedOption}'.\nPlease select a valid option.`,
       );
       selectedOption = null;
     }
@@ -277,10 +275,12 @@ function validateCityData(city) {
  */
 function updateTempUnit(degreeUnit) {
   store.dispatch({
-    type: "user/updateMetric",
+    type: 'user/updateMetric',
     payload: degreeUnit,
   });
   const { defaultDegree } = store.getState().selectedUser;
 
   return defaultDegree;
 }
+
+export default actionsReducer;

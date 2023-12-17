@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import constants from "./constants.js";
+import chalk from 'chalk';
+import { DEGREE_UNIT } from './constants.js';
 
 /**
  * Determines the weather severity.
@@ -11,17 +11,18 @@ import constants from "./constants.js";
  */
 export function findWeatherSeverity(val, unit) {
   let temp = val;
-  if (unit === constants.DEGREE_UNIT.f) {
+  if (unit === DEGREE_UNIT.f) {
     temp = fahrenheitToCelsius(val);
   }
 
   if (temp > 30) {
-    return "hot";
-  } else if (temp < 10) {
-    return "cold";
+    return 'hot';
+  }
+  if (temp < 10) {
+    return 'cold';
   }
 
-  return "normal";
+  return 'normal';
 }
 
 /**
@@ -43,9 +44,9 @@ function fahrenheitToCelsius(temp) {
  */
 export function formatTemperature(value, severity) {
   let valStr = String(value);
-  if (severity === "cold") {
+  if (severity === 'cold') {
     valStr = chalk.cyan(valStr);
-  } else if (severity === "hot") {
+  } else if (severity === 'hot') {
     valStr = chalk.red(valStr);
   }
 

@@ -1,4 +1,5 @@
-import chalk from "chalk";
+/* eslint-disable no-console */
+import chalk from 'chalk';
 
 /**
  * Formats the informational logs.
@@ -50,7 +51,7 @@ function error(...args) {
   console.log(chalk.red(...args));
 }
 
-export const consoleUtils = {
+const consoleUtils = {
   info,
   options,
   prompt,

@@ -1,5 +1,5 @@
-import store from "../store/store.js";
-import { EXIT_PROMPT } from "../utils/constants.js";
+import store from '../store/store.js';
+import { EXIT_PROMPT } from '../utils/constants.js';
 
 /**
  * Creates the prompts string.
@@ -9,7 +9,7 @@ import { EXIT_PROMPT } from "../utils/constants.js";
 export function createPromptsString(prompts) {
   return [...prompts, EXIT_PROMPT]
     .map((val, index) => `${val.option ?? index}: ${val.label}`)
-    .join("\n");
+    .join('\n');
 }
 
 /**
@@ -23,9 +23,9 @@ export function createUserPromptString(users) {
       (val, index) =>
         `${index}: ${[val.fullName, val.city, val.country]
           .filter(Boolean)
-          .join(", ")}`
+          .join(', ')}`,
     )
-    .join("\n");
+    .join('\n');
   const exitPrompt = `${EXIT_PROMPT.option}: ${EXIT_PROMPT.label}`;
 
   return `${usersPrompt}\n${exitPrompt}`;
@@ -53,6 +53,8 @@ export function filterPromptsByCondition(prompts) {
 function isPromptValid(prompt) {
   if (!prompt.condition) return true;
 
+  // eslint-disable-next-line no-unused-vars
   const { selectedUser: user, weatherTransactions: logs } = store.getState();
+  // eslint-disable-next-line no-eval
   return eval(prompt.condition);
 }

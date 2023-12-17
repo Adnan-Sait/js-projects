@@ -5,11 +5,11 @@
  * @returns {String} Formatted Time
  */
 export function getFormattedTimeZone(date) {
-  const timeFormat = new Intl.DateTimeFormat("en-US", {
-    hour12: "string",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
+  const timeFormat = new Intl.DateTimeFormat('en-US', {
+    hour12: 'string',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
   }).format(date);
   return timeFormat;
 }

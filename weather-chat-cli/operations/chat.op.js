@@ -1,13 +1,13 @@
-import readline from "node:readline/promises";
-import { stdin as input, stdout as output } from "node:process";
+import readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
 import {
   createPromptsString,
   createUserPromptString,
   filterPromptsByCondition,
-} from "./prompts.op.js";
-import { actionsReducer } from "./actions.op.js";
-import consoleUtils from "../utils/consoleFunctions.js";
-import store from "../store/store.js";
+} from './prompts.op.js';
+import { actionsReducer } from './actions.op.js';
+import consoleUtils from '../utils/consoleFunctions.js';
+import store from '../store/store.js';
 
 /**
  * Shows user the options, receives the response and evaluates if it is invalid.
@@ -29,7 +29,7 @@ async function getPromptResponse(prompt, questionStr, data, rlInterface) {
 
   const response = await rlInterface.question(consoleUtils.prompt(questionStr));
 
-  if (response === "9") {
+  if (response === '9') {
     return null;
   }
 
@@ -37,7 +37,7 @@ async function getPromptResponse(prompt, questionStr, data, rlInterface) {
 
   if (!chosenOption) {
     consoleUtils.error(
-      `Invalid option '${response}'.\nPlease select a valid option.`
+      `Invalid option '${response}'.\nPlease select a valid option.`,
     );
     return await getPromptResponse(prompt, questionStr, data, rlInterface);
   }
@@ -56,9 +56,10 @@ export async function startChat(chatOptions, users, labelsJson) {
 
     closeChat = await selectUserChat(users, rl);
     const { selectedUser } = store.getState();
-    consoleUtils.info("Selected User: ", selectedUser.fullName);
+    consoleUtils.info('Selected User: ', selectedUser.fullName);
 
     while (!closeChat) {
+      // eslint-disable-next-line no-await-in-loop
       closeChat = await chat(chatOptions, rl);
     }
   } finally {
@@ -82,9 +83,9 @@ export async function chat(prompts, rlInterface) {
   const promptStr = createPromptsString(filteredPrompts);
   const chosenPrompt = await getPromptResponse(
     promptStr,
-    "Enter your response: ",
+    'Enter your response: ',
     filteredPrompts,
-    rlInterface
+    rlInterface,
   );
 
   if (chosenPrompt === null) {
@@ -96,13 +97,12 @@ export async function chat(prompts, rlInterface) {
     const response = await actionsReducer(
       chosenPrompt.action,
       user,
-      rlInterface
+      rlInterface,
     );
     return response;
-  } else {
-    // Show next set of options.
-    return await chat(chosenPrompt.subPrompts, rlInterface);
   }
+  // Show next set of options.
+  return await chat(chosenPrompt.subPrompts, rlInterface);
 }
 
 /**
@@ -115,15 +115,15 @@ export async function selectUserChat(users, rlInterface) {
   const promptStr = createUserPromptString(users);
   const chosenUser = await getPromptResponse(
     promptStr,
-    "Enter your option: ",
+    'Enter your option: ',
     users,
-    rlInterface
+    rlInterface,
   );
 
   if (chosenUser === null) {
     return true;
   }
-  store.dispatch({ type: "user/select", payload: chosenUser });
+  store.dispatch({ type: 'user/select', payload: chosenUser });
 
   return false;
 }

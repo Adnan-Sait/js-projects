@@ -1,12 +1,12 @@
-import fs from "node:fs";
-import { startChat } from "./operations/chat.op.js";
+import fs from 'node:fs';
+import { startChat } from './operations/chat.op.js';
 
 /**
  * @typedef     {Object}            Prompt
  * @property    {String}            label
  * @property    {Prompt[] | null}   subPrompts
  * @property    {String}            action
- * @property    {String}            condition     JS condition that can be evaluated. Must evaluate to a boolean.
+ * @property    {String}            condition JS condition that can be evaluated. Must evaluate to a boolean.
  */
 
 /**
@@ -78,12 +78,12 @@ import { startChat } from "./operations/chat.op.js";
 /**
  * @type {Prompt[]}
  */
-const promptsJson = JSON.parse(fs.readFileSync("./data/prompts.json"));
+const promptsJson = JSON.parse(fs.readFileSync('./data/prompts.json'));
 /**
  * @type {User[]}
  */
-const usersJson = JSON.parse(fs.readFileSync("./data/users.json"));
-const labelsJson = JSON.parse(fs.readFileSync("./data/labels.json"));
+const usersJson = JSON.parse(fs.readFileSync('./data/users.json'));
+const labelsJson = JSON.parse(fs.readFileSync('./data/labels.json'));
 
 /**
  * Main Function.

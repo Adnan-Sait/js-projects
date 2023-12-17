@@ -21,18 +21,18 @@ let currentState = reducer();
 function reducer(state = initialState, action = {}) {
   const { type, payload } = action;
   switch (type) {
-    case "user/select": {
+    case 'user/select': {
       return { ...state, selectedUser: payload };
     }
-    case "user/updateMetric": {
+    case 'user/updateMetric': {
       const updatedUser = { ...state.selectedUser, defaultDegree: payload };
       return { ...state, selectedUser: updatedUser };
     }
-    case "user/updateCity": {
+    case 'user/updateCity': {
       const updatedUser = { ...state.selectedUser, ...payload };
       return { ...state, selectedUser: updatedUser };
     }
-    case "weather/add": {
+    case 'weather/add': {
       const updatedWeatherLogs = [...state.weatherTransactions, payload];
       return { ...state, weatherTransactions: updatedWeatherLogs };
     }
