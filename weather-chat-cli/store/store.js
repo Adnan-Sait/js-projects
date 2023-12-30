@@ -1,8 +1,9 @@
 import appReducer from './appSlice.js';
+import labelReducer from './labelSlice.js';
 
 const slices = {
   app: appReducer,
-  label: () => {},
+  label: labelReducer,
 };
 
 // Initializing state when store is imported.
