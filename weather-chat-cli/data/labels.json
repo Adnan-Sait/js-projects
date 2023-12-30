@@ -1,3 +1,9 @@
 {
-  "welcomePage": "Welcome to the Weather Chat CLI.\nPowered by Open-Meteo (https://open-meteo.com/en/docs).\nPlease select a user to continue."
+  "welcomePage": "Welcome to the Weather Chat CLI.\nPowered by Open-Meteo (https://open-meteo.com/en/docs).\nPlease select a user to continue.",
+  "errorLabels": {
+    "jsonFileParsingError": "Error loading config data. Please report this issue to the administrator.",
+    "appRuntimeError": "Ran into an error. Please report this issue to the administrator.",
+    "userSelectionError": "Error in user selection. Please report this issue to the administrator.",
+    "weatherServiceError": "Error getting weather data. Please try again later."
+  }
 }
