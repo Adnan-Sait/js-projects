@@ -55,7 +55,7 @@ export async function startChat(chatOptions, users, labelsJson) {
     let closeChat = false;
 
     closeChat = await selectUserChat(users, rl);
-    const { selectedUser } = store.getState();
+    const { selectedUser } = store.getState((state) => state.app);
     consoleUtils.info('Selected User: ', selectedUser.fullName);
 
     while (!closeChat) {
@@ -75,7 +75,7 @@ export async function startChat(chatOptions, users, labelsJson) {
  * @returns {Promise<Boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
  */
 export async function chat(prompts, rlInterface) {
-  const { selectedUser: user } = store.getState();
+  const { selectedUser: user } = store.getState((state) => state.app);
 
   const filteredPrompts = filterPromptsByCondition(prompts);
 

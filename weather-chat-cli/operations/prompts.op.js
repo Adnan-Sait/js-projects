@@ -54,7 +54,9 @@ function isPromptValid(prompt) {
   if (!prompt.condition) return true;
 
   // eslint-disable-next-line no-unused-vars
-  const { selectedUser: user, weatherTransactions: logs } = store.getState();
+  const { selectedUser: user, weatherTransactions: logs } = store.getState(
+    (state) => state.app,
+  );
   // eslint-disable-next-line no-eval
   return eval(prompt.condition);
 }

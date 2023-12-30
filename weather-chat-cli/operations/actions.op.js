@@ -86,7 +86,7 @@ export async function actionsReducer(action, user, rlInterface) {
           timezone: chosenCity.timezone || user.timezone,
         };
         store.dispatch({ type: 'user/updateCity', payload: updatedUser });
-        const { selectedUser } = store.getState();
+        const { selectedUser } = store.getState((state) => state.app);
 
         consoleUtils.info(
           `Hometown Set to: ${selectedUser.city}, ${selectedUser.country}`,
@@ -97,7 +97,7 @@ export async function actionsReducer(action, user, rlInterface) {
       break;
     }
     case 'transaction-logs': {
-      const { weatherTransactions } = store.getState();
+      const { weatherTransactions } = store.getState((state) => state.app);
 
       const logs = weatherTransactions.map((data) => {
         return `${getGmtFormattedDateTime(data.timestamp)}: ${
@@ -278,7 +278,9 @@ function updateTempUnit(degreeUnit) {
     type: 'user/updateMetric',
     payload: degreeUnit,
   });
-  const { defaultDegree } = store.getState().selectedUser;
+  const {
+    selectedUser: { defaultDegree },
+  } = store.getState((state) => state.app);
 
   return defaultDegree;
 }
