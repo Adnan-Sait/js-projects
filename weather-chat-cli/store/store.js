@@ -1,53 +1,46 @@
-/**
- * @type {import("..").AppState}
- */
-const initialState = {
-  selectedUser: {},
-  weatherTransactions: [],
+import appReducer from './appSlice.js';
+
+const slices = {
+  app: appReducer,
+  label: () => {},
 };
 
 // Initializing state when store is imported.
-let currentState = reducer();
+let currentState = loadInitialState();
 
-/**
- * Updates the current state.
- *
- * @template T
- * @param {import("..").AppState} state Current State
- * @param {import("..").AppAction<T>} action Action triggered.
- *
- * @returns {import("..").AppState}
- */
-function reducer(state = initialState, action = {}) {
-  const { type, payload } = action;
-  switch (type) {
-    case 'user/select': {
-      return { ...state, selectedUser: payload };
-    }
-    case 'user/updateMetric': {
-      const updatedUser = { ...state.selectedUser, defaultDegree: payload };
-      return { ...state, selectedUser: updatedUser };
-    }
-    case 'user/updateCity': {
-      const updatedUser = { ...state.selectedUser, ...payload };
-      return { ...state, selectedUser: updatedUser };
-    }
-    case 'weather/add': {
-      const updatedWeatherLogs = [...state.weatherTransactions, payload];
-      return { ...state, weatherTransactions: updatedWeatherLogs };
-    }
-    default: {
-      return state;
-    }
+function loadInitialState() {
+  const initialState = {};
+  Object.entries(slices).forEach((item) => {
+    const [reducerName, reducerFn] = item;
+    initialState[reducerName] = reducerFn();
+  });
+
+  return initialState;
+}
+
+function masterReducer(state, action = {}) {
+  const { type } = action;
+  let tempState = state;
+
+  if (type?.startsWith('label')) {
+    tempState = { ...state, label: slices.label(currentState.label, action) };
+  } else {
+    tempState = { ...state, app: slices.app(currentState.app, action) };
   }
+
+  return tempState;
 }
 
 /**
  * Returns the current state.
  *
+ * @param {Function} selectorFn Function with state parameter.
+ *
  * @returns {import("..").AppState}
  */
-function getState() {
+function getState(selectorFn) {
+  if (selectorFn) return selectorFn(currentState);
+
   return currentState;
 }
 
@@ -58,7 +51,7 @@ function getState() {
  * @param {import("..").AppAction<T>} action Action
  */
 function dispatch(action) {
-  currentState = reducer(getState(), action);
+  currentState = masterReducer(getState(), action);
 }
 
 const store = {
