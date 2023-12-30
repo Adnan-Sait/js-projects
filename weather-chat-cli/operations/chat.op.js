@@ -9,6 +9,8 @@ import { actionsReducer } from './actions.op.js';
 import consoleUtils from '../utils/consoleFunctions.js';
 import store from '../store/store.js';
 
+let labels;
+
 /**
  * Shows user the options, receives the response and evaluates if it is invalid.
  * If the response is invalid, retriggers the call to get a valid input.
@@ -48,10 +50,11 @@ async function getPromptResponse(prompt, questionStr, data, rlInterface) {
 /**
  * Initiates the user chat.
  */
-export async function startChat(chatOptions, users, labelsJson) {
+export async function startChat(chatOptions, users) {
+  labels = store.getState((state) => state.label);
   const rl = readline.createInterface({ input, output });
   try {
-    consoleUtils.info(labelsJson.welcomePage);
+    consoleUtils.info(labels.welcomePage);
     let closeChat = false;
 
     closeChat = await selectUserChat(users, rl);
