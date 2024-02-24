@@ -4,7 +4,7 @@ import { EXIT_PROMPT } from '../utils/constants.js';
 /**
  * Creates the prompts string.
  *
- * @param {import("../index.js").Prompt[]} prompts
+ * @param {import('../types/index.js').Prompt[]} prompts
  */
 export function createPromptsString(prompts) {
   return [...prompts, EXIT_PROMPT]
@@ -15,7 +15,7 @@ export function createPromptsString(prompts) {
 /**
  * Creates the user prompt.
  *
- * @param {import("../index.js").User[]} users Users
+ * @param {import('../types/index.js').User[]} users Users
  */
 export function createUserPromptString(users) {
   const usersPrompt = users
@@ -34,9 +34,9 @@ export function createUserPromptString(users) {
 /**
  * Filters the prompts based on the condition.
  *
- * @param {import("../index.js").Prompt[]} prompts Prompts
+ * @param {import('../types/index.js').Prompt[]} prompts Prompts
  *
- * @returns {import("../index.js").Prompt[]}
+ * @returns {import('../types/index.js').Prompt[]}
  */
 export function filterPromptsByCondition(prompts) {
   return prompts.filter(isPromptValid);
@@ -46,15 +46,18 @@ export function filterPromptsByCondition(prompts) {
  * Checks if the prompt meets the condition.
  * Supports 2 variables `user` & `logs`.
  *
- * @param {import("../index.js").Prompt} prompt Prompt
+ * @param {import('../types/index.js').Prompt} prompt Prompt
  *
- * @returns {Boolean}
+ * @returns {boolean}
  */
 function isPromptValid(prompt) {
   if (!prompt.condition) return true;
 
+  // Variables to be used by the eval expression.
   // eslint-disable-next-line no-unused-vars
-  const { selectedUser: user, weatherTransactions: logs } = store.getState();
+  const { selectedUser: user, weatherTransactions: logs } = store.getState(
+    (state) => state.app,
+  );
   // eslint-disable-next-line no-eval
   return eval(prompt.condition);
 }

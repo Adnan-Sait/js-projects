@@ -14,10 +14,10 @@ import store from '../store/store.js';
 /**
  * Invokes reducers based on the specified action
  *
- * @param {String} action Action to be performed.
- * @param {import("..").User} user The active user.
+ * @param {string} action Action to be performed.
+ * @param {import('../types/index.js').User} user The active user.
  * @param {readline.Interface} rlInterface Interface to get user input
- * @returns {Promise<Boolean>}  true - if the chat needs to be terminated, false - if the chat must be restarted.
+ * @returns {Promise<boolean>}  true - if the chat needs to be terminated, false - if the chat must be restarted.
  */
 export async function actionsReducer(action, user, rlInterface) {
   let returnVal;
@@ -76,7 +76,7 @@ export async function actionsReducer(action, user, rlInterface) {
 
       if (chosenCity) {
         /**
-         * @type {import("..").User}
+         * @type {import('../types/index.js').User}
          */
         const updatedUser = {
           city: chosenCity.name,
@@ -86,7 +86,7 @@ export async function actionsReducer(action, user, rlInterface) {
           timezone: chosenCity.timezone || user.timezone,
         };
         store.dispatch({ type: 'user/updateCity', payload: updatedUser });
-        const { selectedUser } = store.getState();
+        const { selectedUser } = store.getState((state) => state.app);
 
         consoleUtils.info(
           `Hometown Set to: ${selectedUser.city}, ${selectedUser.country}`,
@@ -97,7 +97,7 @@ export async function actionsReducer(action, user, rlInterface) {
       break;
     }
     case 'transaction-logs': {
-      const { weatherTransactions } = store.getState();
+      const { weatherTransactions } = store.getState((state) => state.app);
 
       const logs = weatherTransactions.map((data) => {
         return `${getGmtFormattedDateTime(data.timestamp)}: ${
@@ -121,12 +121,12 @@ export async function actionsReducer(action, user, rlInterface) {
 /**
  * Retrieves the weather and returns the string to be shown.
  *
- * @param {Number} latitude Latitude
- * @param {Number} longitude Longitude
- * @param {String} timezone Timezone
- * @param {String} cityName Name of the city
+ * @param {number} latitude Latitude
+ * @param {number} longitude Longitude
+ * @param {string} timezone Timezone
+ * @param {string} cityName Name of the city
  * @param {"celsius" | "fahrenheit"} unit Temperature unit
- * @returns {Promise<String | null>} null is returned incase of an error.
+ * @returns {Promise<string | null>} null is returned incase of an error.
  */
 async function getWeather(latitude, longitude, timezone, cityName, unit) {
   try {
@@ -154,7 +154,7 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
       )} at ${formattedTime} ${timezone}`;
 
       /**
-       * @type {import("..").WeatherTransactionsLog}
+       * @type {import('../types/index.js').WeatherTransactionsLog}
        */
       const weatherTransaction = {
         timestamp: new Date(),
@@ -174,8 +174,8 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
 /**
  * Retrieves the cities that match this name.
  *
- * @param {String} name City name to search
- * @returns {Promise<import("..").GeoLocationData[] | null>}
+ * @param {string} name City name to search
+ * @returns {Promise<import('../types/index.js').GeoLocationData[] | null>}
  */
 async function getCitiesByName(name) {
   try {
@@ -199,7 +199,7 @@ async function getCitiesByName(name) {
  *
  * @param {readline.Interface} rlInterface
  *
- * @returns {Promise<import("..").GeoLocationData | null>} City if found, else null.
+ * @returns {Promise<import('../types/index.js').GeoLocationData | null>} City if found, else null.
  */
 async function selectCity(rlInterface) {
   const cityName = await rlInterface.question(
@@ -255,9 +255,9 @@ async function selectCity(rlInterface) {
  * Validates if the city object is valid.
  * The city object must contain name, latitude, longitude, and country to be valid.
  *
- * @param {import("..").GeoLocationData} city
+ * @param {import('../types/index.js').GeoLocationData} city
  *
- * @returns {Boolean} true if valid, false if invalid.
+ * @returns {boolean} true if valid, false if invalid.
  */
 function validateCityData(city) {
   if (city.name && city.country && city.latitude && city.longitude) {
@@ -278,7 +278,9 @@ function updateTempUnit(degreeUnit) {
     type: 'user/updateMetric',
     payload: degreeUnit,
   });
-  const { defaultDegree } = store.getState().selectedUser;
+  const {
+    selectedUser: { defaultDegree },
+  } = store.getState((state) => state.app);
 
   return defaultDegree;
 }

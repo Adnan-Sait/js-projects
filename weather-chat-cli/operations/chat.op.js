@@ -9,6 +9,8 @@ import { actionsReducer } from './actions.op.js';
 import consoleUtils from '../utils/consoleFunctions.js';
 import store from '../store/store.js';
 
+let labels;
+
 /**
  * Shows user the options, receives the response and evaluates if it is invalid.
  * If the response is invalid, retriggers the call to get a valid input.
@@ -17,8 +19,8 @@ import store from '../store/store.js';
  * Else returns the chosenOption object.
  *
  * @template T
- * @param {String} prompt Prompt to be shown to the user.
- * @param {String} questionStr The string to be used while asking user for response
+ * @param {string} prompt Prompt to be shown to the user.
+ * @param {string} questionStr The string to be used while asking user for response
  * @param {T[]} data Data
  * @param {readline.Interface} rlInterface Interface to get user input.
  *
@@ -47,20 +49,24 @@ async function getPromptResponse(prompt, questionStr, data, rlInterface) {
 
 /**
  * Initiates the user chat.
+ *
+ * @param {import('../types/index.js').Prompt[]} prompts Prompts
+ * @param {import('../types/index.js').User[]} users Users
  */
-export async function startChat(chatOptions, users, labelsJson) {
+export async function startChat(prompts, users) {
+  labels = store.getState((state) => state.label);
   const rl = readline.createInterface({ input, output });
   try {
-    consoleUtils.info(labelsJson.welcomePage);
+    consoleUtils.info(labels.welcomePage);
     let closeChat = false;
 
     closeChat = await selectUserChat(users, rl);
-    const { selectedUser } = store.getState();
+    const { selectedUser } = store.getState((state) => state.app);
     consoleUtils.info('Selected User: ', selectedUser.fullName);
 
     while (!closeChat) {
       // eslint-disable-next-line no-await-in-loop
-      closeChat = await chat(chatOptions, rl);
+      closeChat = await chat(prompts, rl);
     }
   } finally {
     rl.close();
@@ -70,12 +76,12 @@ export async function startChat(chatOptions, users, labelsJson) {
 /**
  * Handles user chat.
  *
- * @param {Prompt[]} prompts Prompts to be shown.
+ * @param {import('../types/index.js').Prompt[]} prompts Prompts to be shown.
  * @param {readline.Interface} rlInterface Interface to get user input.
- * @returns {Promise<Boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
+ * @returns {Promise<boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
  */
 export async function chat(prompts, rlInterface) {
-  const { selectedUser: user } = store.getState();
+  const { selectedUser: user } = store.getState((state) => state.app);
 
   const filteredPrompts = filterPromptsByCondition(prompts);
 
@@ -108,7 +114,7 @@ export async function chat(prompts, rlInterface) {
 /**
  * Prompts the user to select a user.
  *
- * @param {import("../index.js").User[]} users Users
+ * @param {import('../types/index.js').User[]} users Users
  * @param {readline.Interface} rlInterface Interface to get user input.
  */
 export async function selectUserChat(users, rlInterface) {

@@ -2,7 +2,7 @@
  * Formats and returns the timestamp.
  *
  * @param {Date} date Date
- * @returns {String} Formatted Time
+ * @returns {string} Formatted Time
  */
 export function getFormattedTimeZone(date) {
   const timeFormat = new Intl.DateTimeFormat('en-US', {
@@ -18,7 +18,7 @@ export function getFormattedTimeZone(date) {
  * Formats the date as a string.
  *
  * @param {Date} date Date
- * @returns {String}
+ * @returns {string}
  */
 export function getGmtFormattedDateTime(date) {
   return new Date(date).toISOString();

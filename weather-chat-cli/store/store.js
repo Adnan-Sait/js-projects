@@ -1,53 +1,65 @@
+import appReducer from './appSlice.js';
+import labelReducer from './labelSlice.js';
+
 /**
- * @type {import("..").AppState}
+ * @type {Object.<string, Function>}
  */
-const initialState = {
-  selectedUser: {},
-  weatherTransactions: [],
+const slices = {
+  app: appReducer,
+  label: labelReducer,
 };
 
 // Initializing state when store is imported.
-let currentState = reducer();
+let currentState = loadInitialState();
 
 /**
- * Updates the current state.
+ * Initializes the initial state.
+ * Invokes the reducer for all slices to generate the initial state.
  *
- * @template T
- * @param {import("..").AppState} state Current State
- * @param {import("..").AppAction<T>} action Action triggered.
- *
- * @returns {import("..").AppState}
+ * @returns {Object}
  */
-function reducer(state = initialState, action = {}) {
-  const { type, payload } = action;
-  switch (type) {
-    case 'user/select': {
-      return { ...state, selectedUser: payload };
-    }
-    case 'user/updateMetric': {
-      const updatedUser = { ...state.selectedUser, defaultDegree: payload };
-      return { ...state, selectedUser: updatedUser };
-    }
-    case 'user/updateCity': {
-      const updatedUser = { ...state.selectedUser, ...payload };
-      return { ...state, selectedUser: updatedUser };
-    }
-    case 'weather/add': {
-      const updatedWeatherLogs = [...state.weatherTransactions, payload];
-      return { ...state, weatherTransactions: updatedWeatherLogs };
-    }
-    default: {
-      return state;
-    }
+function loadInitialState() {
+  const initialState = {};
+  Object.entries(slices).forEach((item) => {
+    const [reducerName, reducerFn] = item;
+    initialState[reducerName] = reducerFn();
+  });
+
+  return initialState;
+}
+
+/**
+ * Reducer to handle all state updates.
+ * Invokes the required slice reducer based on the action type
+ *
+ * @param {Object} state State
+ * @param {import('../types/index.js').AppAction<Object>} action Action
+ *
+ * @returns {Object}
+ */
+function masterReducer(state, action = {}) {
+  const { type } = action;
+  let tempState = state;
+
+  if (type?.startsWith('label')) {
+    tempState = { ...state, label: slices.label(currentState.label, action) };
+  } else {
+    tempState = { ...state, app: slices.app(currentState.app, action) };
   }
+
+  return tempState;
 }
 
 /**
  * Returns the current state.
  *
- * @returns {import("..").AppState}
+ * @param {Function} selectorFn Function with state parameter.
+ *
+ * @returns {import('../types/index.js').AppState}
  */
-function getState() {
+function getState(selectorFn) {
+  if (selectorFn) return selectorFn(currentState);
+
   return currentState;
 }
 
@@ -55,12 +67,15 @@ function getState() {
  * Invokes the reducer to update the state.
  *
  * @template T
- * @param {import("..").AppAction<T>} action Action
+ * @param {import('../types/index.js').AppAction<T>} action Action
  */
 function dispatch(action) {
-  currentState = reducer(getState(), action);
+  currentState = masterReducer(getState(), action);
 }
 
+/**
+ * @type {Object.<string, Function>}
+ */
 const store = {
   getState,
   dispatch,
