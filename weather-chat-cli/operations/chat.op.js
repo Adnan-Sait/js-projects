@@ -19,8 +19,8 @@ let labels;
  * Else returns the chosenOption object.
  *
  * @template T
- * @param {String} prompt Prompt to be shown to the user.
- * @param {String} questionStr The string to be used while asking user for response
+ * @param {string} prompt Prompt to be shown to the user.
+ * @param {string} questionStr The string to be used while asking user for response
  * @param {T[]} data Data
  * @param {readline.Interface} rlInterface Interface to get user input.
  *
@@ -78,7 +78,7 @@ export async function startChat(prompts, users) {
  *
  * @param {import('../types/index.js').Prompt[]} prompts Prompts to be shown.
  * @param {readline.Interface} rlInterface Interface to get user input.
- * @returns {Promise<Boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
+ * @returns {Promise<boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
  */
 export async function chat(prompts, rlInterface) {
   const { selectedUser: user } = store.getState((state) => state.app);
