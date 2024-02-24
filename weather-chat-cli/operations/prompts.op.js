@@ -48,7 +48,7 @@ export function filterPromptsByCondition(prompts) {
  *
  * @param {import('../types/index.js').Prompt} prompt Prompt
  *
- * @returns {Boolean}
+ * @returns {boolean}
  */
 function isPromptValid(prompt) {
   if (!prompt.condition) return true;

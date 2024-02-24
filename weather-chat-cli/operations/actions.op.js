@@ -14,10 +14,10 @@ import store from '../store/store.js';
 /**
  * Invokes reducers based on the specified action
  *
- * @param {String} action Action to be performed.
+ * @param {string} action Action to be performed.
  * @param {import('../types/index.js').User} user The active user.
  * @param {readline.Interface} rlInterface Interface to get user input
- * @returns {Promise<Boolean>}  true - if the chat needs to be terminated, false - if the chat must be restarted.
+ * @returns {Promise<boolean>}  true - if the chat needs to be terminated, false - if the chat must be restarted.
  */
 export async function actionsReducer(action, user, rlInterface) {
   let returnVal;
@@ -121,12 +121,12 @@ export async function actionsReducer(action, user, rlInterface) {
 /**
  * Retrieves the weather and returns the string to be shown.
  *
- * @param {Number} latitude Latitude
- * @param {Number} longitude Longitude
- * @param {String} timezone Timezone
- * @param {String} cityName Name of the city
+ * @param {number} latitude Latitude
+ * @param {number} longitude Longitude
+ * @param {string} timezone Timezone
+ * @param {string} cityName Name of the city
  * @param {"celsius" | "fahrenheit"} unit Temperature unit
- * @returns {Promise<String | null>} null is returned incase of an error.
+ * @returns {Promise<string | null>} null is returned incase of an error.
  */
 async function getWeather(latitude, longitude, timezone, cityName, unit) {
   try {
@@ -174,7 +174,7 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
 /**
  * Retrieves the cities that match this name.
  *
- * @param {String} name City name to search
+ * @param {string} name City name to search
  * @returns {Promise<import('../types/index.js').GeoLocationData[] | null>}
  */
 async function getCitiesByName(name) {
@@ -257,7 +257,7 @@ async function selectCity(rlInterface) {
  *
  * @param {import('../types/index.js').GeoLocationData} city
  *
- * @returns {Boolean} true if valid, false if invalid.
+ * @returns {boolean} true if valid, false if invalid.
  */
 function validateCityData(city) {
   if (city.name && city.country && city.latitude && city.longitude) {

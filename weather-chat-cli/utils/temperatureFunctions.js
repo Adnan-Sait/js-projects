@@ -5,7 +5,7 @@ import { DEGREE_UNIT } from './constants.js';
  * Determines the weather severity.
  * Converts to celsius if unit is fahrenheit.
  *
- * @param {Number} val Temperature
+ * @param {number} val Temperature
  * @param {"celsius" | "fahrenheit"} unit Temperature Unit
  * @returns
  */
@@ -28,7 +28,7 @@ export function findWeatherSeverity(val, unit) {
 /**
  * Converts temperature to Celsius.
  *
- * @param {Number} temp Temperature
+ * @param {number} temp Temperature
  * @returns
  */
 function fahrenheitToCelsius(temp) {
@@ -38,7 +38,7 @@ function fahrenheitToCelsius(temp) {
 /**
  * Styles the temperature string based on severity.
  *
- * @param {Number} value Temperature
+ * @param {number} value Temperature
  * @param {"hot" | "cold" | "normal"} severity Severity
  * @returns
  */
