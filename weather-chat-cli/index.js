@@ -15,8 +15,6 @@ let usersJson;
  */
 let labelsJson;
 
-store.dispatch({ type: 'label/setLabel', payload: labelsJson });
-
 /**
  * Main Function.
  */
@@ -28,6 +26,8 @@ try {
   promptsJson = JSON.parse(fs.readFileSync('./data/prompts.json'));
   usersJson = JSON.parse(fs.readFileSync('./data/users.json'));
   labelsJson = JSON.parse(fs.readFileSync('./data/labels.json'));
+
+  store.dispatch({ type: 'label/setLabel', payload: labelsJson });
 } catch (err) {
   throw new Error(
     `Error loading config data. Please report this issue to the administrator.`,
