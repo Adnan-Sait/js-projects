@@ -49,6 +49,7 @@ async function getPromptResponse(prompt, questionStr, data, rlInterface) {
 
 /**
  * Initiates the user chat.
+ * TODO: Add types to the parameters.
  */
 export async function startChat(chatOptions, users) {
   labels = store.getState((state) => state.label);
@@ -73,7 +74,7 @@ export async function startChat(chatOptions, users) {
 /**
  * Handles user chat.
  *
- * @param {Prompt[]} prompts Prompts to be shown.
+ * @param {import('../types/index.js').Prompt[]} prompts Prompts to be shown.
  * @param {readline.Interface} rlInterface Interface to get user input.
  * @returns {Promise<Boolean>} true - if the chat needs to terminated. false - if the chat needs to be restarted.
  */
@@ -111,7 +112,7 @@ export async function chat(prompts, rlInterface) {
 /**
  * Prompts the user to select a user.
  *
- * @param {import("../index.js").User[]} users Users
+ * @param {import('../types/index.js').User[]} users Users
  * @param {readline.Interface} rlInterface Interface to get user input.
  */
 export async function selectUserChat(users, rlInterface) {
