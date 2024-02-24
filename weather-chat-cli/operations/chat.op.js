@@ -61,6 +61,8 @@ export async function startChat(prompts, users) {
     let closeChat = false;
 
     closeChat = await selectUserChat(users, rl);
+    if (closeChat) return;
+
     const { selectedUser } = store.getState((state) => state.app);
     consoleUtils.info('Selected User: ', selectedUser.fullName);
 

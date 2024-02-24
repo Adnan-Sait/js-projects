@@ -30,9 +30,9 @@ export async function actionsReducer(action, user, rlInterface) {
         user.city,
         user.defaultDegree,
       );
-      if (response) {
+      if (response?.length > 0) {
         consoleUtils.data(response);
-      } else {
+      } else if (response === undefined) {
         consoleUtils.error('Error getting weather data for your home location');
       }
       returnVal = false;
@@ -50,9 +50,9 @@ export async function actionsReducer(action, user, rlInterface) {
           user.defaultDegree,
         );
 
-        if (response) {
+        if (response?.length > 0) {
           consoleUtils.data(response);
-        } else {
+        } else if (response === undefined) {
           consoleUtils.error('Error getting weather data for the location');
         }
       }
@@ -166,8 +166,12 @@ async function getWeather(latitude, longitude, timezone, cityName, unit) {
     }
     throw new Error('Data field is not present');
   } catch (err) {
-    // console.error(`Error in 'getWeather', `, err);
-    return null;
+    consoleUtils.error(
+      'Error getting data from Weather Service: ',
+      err.message,
+      '\nPlease try again later.',
+    );
+    return '';
   }
 }
 
@@ -189,8 +193,12 @@ async function getCitiesByName(name) {
     }
     throw new Error('Data field is not present');
   } catch (err) {
-    // console.err(`Error in 'getCitiesByName', `, err.message);
-    return null;
+    consoleUtils.error(
+      'Error getting data from Weather Service: ',
+      err.message,
+      '\nPlease try again later.',
+    );
+    return '';
   }
 }
 
