@@ -1,8 +1,6 @@
 import appReducer from './appSlice.js';
 import labelReducer from './labelSlice.js';
 
-// TODO: Add types.
-
 const slices = {
   app: appReducer,
   label: labelReducer,

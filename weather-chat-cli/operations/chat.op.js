@@ -49,9 +49,11 @@ async function getPromptResponse(prompt, questionStr, data, rlInterface) {
 
 /**
  * Initiates the user chat.
- * TODO: Add types to the parameters.
+ *
+ * @param {import('../types/index.js').Prompt[]} prompts Prompts
+ * @param {import('../types/index.js').User[]} users Users
  */
-export async function startChat(chatOptions, users) {
+export async function startChat(prompts, users) {
   labels = store.getState((state) => state.label);
   const rl = readline.createInterface({ input, output });
   try {
@@ -64,7 +66,7 @@ export async function startChat(chatOptions, users) {
 
     while (!closeChat) {
       // eslint-disable-next-line no-await-in-loop
-      closeChat = await chat(chatOptions, rl);
+      closeChat = await chat(prompts, rl);
     }
   } finally {
     rl.close();
