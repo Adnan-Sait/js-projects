@@ -1,5 +1,5 @@
 /**
- * @type {import("..").AppState}
+ * @type {import("../types").AppState}
  */
 const initialState = {
   selectedUser: {},
@@ -10,10 +10,10 @@ const initialState = {
  * Updates the current state.
  *
  * @template T
- * @param {import("..").AppState} state Current State
- * @param {import("..").AppAction<T>} action Action triggered.
+ * @param {import("../types").AppState} state Current State
+ * @param {import("../types").AppAction<T>} action Action triggered.
  *
- * @returns {import("..").AppState}
+ * @returns {import("../types").AppState}
  */
 export default function reducer(state = initialState, action = {}) {
   const { type, payload } = action;

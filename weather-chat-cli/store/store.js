@@ -1,6 +1,8 @@
 import appReducer from './appSlice.js';
 import labelReducer from './labelSlice.js';
 
+// TODO: Add types.
+
 const slices = {
   app: appReducer,
   label: labelReducer,
@@ -37,7 +39,7 @@ function masterReducer(state, action = {}) {
  *
  * @param {Function} selectorFn Function with state parameter.
  *
- * @returns {import("..").AppState}
+ * @returns {import('../types/index.js').AppState}
  */
 function getState(selectorFn) {
   if (selectorFn) return selectorFn(currentState);
@@ -49,7 +51,7 @@ function getState(selectorFn) {
  * Invokes the reducer to update the state.
  *
  * @template T
- * @param {import("..").AppAction<T>} action Action
+ * @param {import('../types/index.js').AppAction<T>} action Action
  */
 function dispatch(action) {
   currentState = masterReducer(getState(), action);

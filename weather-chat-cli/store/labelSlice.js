@@ -5,7 +5,7 @@ const initialState = {};
  *
  * @template T
  * @param {Object} state Current State
- * @param {import("..").AppAction<T>} action Action triggered.
+ * @param {import("../types").AppAction<T>} action Action triggered.
  *
  * @returns {Object}
  */
