@@ -1,6 +1,9 @@
 import appReducer from './appSlice.js';
 import labelReducer from './labelSlice.js';
 
+/**
+ * @type {Object.<string, Function>}
+ */
 const slices = {
   app: appReducer,
   label: labelReducer,
@@ -9,6 +12,12 @@ const slices = {
 // Initializing state when store is imported.
 let currentState = loadInitialState();
 
+/**
+ * Initializes the initial state.
+ * Invokes the reducer for all slices to generate the initial state.
+ *
+ * @returns {Object}
+ */
 function loadInitialState() {
   const initialState = {};
   Object.entries(slices).forEach((item) => {
@@ -19,6 +28,15 @@ function loadInitialState() {
   return initialState;
 }
 
+/**
+ * Reducer to handle all state updates.
+ * Invokes the required slice reducer based on the action type
+ *
+ * @param {Object} state State
+ * @param {import('../types/index.js').AppAction<Object>} action Action
+ *
+ * @returns {Object}
+ */
 function masterReducer(state, action = {}) {
   const { type } = action;
   let tempState = state;
@@ -55,6 +73,9 @@ function dispatch(action) {
   currentState = masterReducer(getState(), action);
 }
 
+/**
+ * @type {Object.<string, Function>}
+ */
 const store = {
   getState,
   dispatch,
