@@ -78,14 +78,17 @@ export async function actionsReducer(action, user, rlInterface) {
         /**
          * @type {import('../types/index.js').User}
          */
-        const updatedUser = {
+        const updatedHomeTownDetails = {
           city: chosenCity.name,
           latitude: chosenCity.latitude,
           longitude: chosenCity.longitude,
           country: chosenCity.country,
           timezone: chosenCity.timezone || user.timezone,
         };
-        store.dispatch({ type: 'user/updateCity', payload: updatedUser });
+        store.dispatch({
+          type: 'user/updateCity',
+          payload: updatedHomeTownDetails,
+        });
         const { selectedUser } = store.getState((state) => state.app);
 
         consoleUtils.info(
@@ -234,29 +237,24 @@ async function selectCity(rlInterface) {
     return `${acc}${promptStr}${endChar}`;
   }, '');
 
-  let selectedOption;
+  let chosenCity;
 
-  while (!selectedOption) {
+  while (!chosenCity) {
     consoleUtils.options(prompt);
     // eslint-disable-next-line no-await-in-loop
-    selectedOption = await rlInterface.question(
+    const selectedOption = await rlInterface.question(
       consoleUtils.prompt('Enter your response: '),
     );
 
-    if (!filteredCities[Number(selectedOption)]) {
+    chosenCity = filteredCities[Number(selectedOption)];
+    if (!chosenCity) {
       consoleUtils.error(
         `Invalid option '${selectedOption}'.\nPlease select a valid option.`,
       );
-      selectedOption = null;
     }
   }
 
-  const chosenCity = filteredCities[Number(selectedOption)];
-
-  if (chosenCity) {
-    return chosenCity;
-  }
-  return null;
+  return chosenCity;
 }
 
 /**
