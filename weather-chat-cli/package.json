@@ -7,8 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "eslint": "npx eslint ./**",
-    "eslint:fix": "npx eslint ./** --fix"
+    "eslint": "npx eslint ./**.js",
+    "eslint:fix": "npx eslint ./**.js --fix"
   },
   "engines": {
     "node": ">=17.4.0"
